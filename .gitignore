@@ -1,0 +1,6 @@
+# Project exclude paths
+/.gradle/
+/androidApp/build/
+/build/
+/shared/build/
+/shared/build/classes/kotlin/android/main/
