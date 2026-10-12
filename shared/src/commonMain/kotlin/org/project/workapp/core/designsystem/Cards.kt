@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,10 +26,15 @@ fun Modifier.liquidGlassCard(
             ambientColor = Color(0x10000000)
         )
         .clip(shape)
-        .background(CustomColors.surface)
+        .background(CustomColors.surface.copy(alpha = 0.4f))
         .border(
             width = 1.dp,
-            color = CustomColors.surfaceBorder,
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    Color.White.copy(alpha = 0.15f),
+                    Color.Transparent
+                )
+            ),
             shape = shape
         )
 }

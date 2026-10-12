@@ -49,14 +49,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -103,13 +105,6 @@ fun ScheduleCard(
     var isMonthMenuExpanded by remember { mutableStateOf(false) }
 
     val highlightColor = CustomColors.primaryAccent
-
-    val smoothFrostGradient = Brush.horizontalGradient(
-        0.0f to CustomColors.surface,
-        0.75f to CustomColors.surface.copy(alpha = 0.98f),
-        0.95f to CustomColors.surface.copy(alpha = 0.3f),
-        1.0f to Color.Transparent
-    )
 
     Box(
         modifier = modifier
@@ -288,135 +283,157 @@ fun ScheduleCard(
                                 .padding(horizontal = 16.dp)
                                 .nestedScroll(stopParentPagerScroll)
                         ) {
-                            Column(
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .horizontalScroll(scrollState)
+                                    .graphicsLayer {
+                                        compositingStrategy = CompositingStrategy.Offscreen
+                                    }
                                     .drawWithContent {
                                         drawContent()
-
-                                        if (todayIndex != -1) {
-                                            val paddingPx = 3.dp.roundToPx()
-                                            val cellWidthPx = 56.dp.roundToPx()
-                                            val spacingPx = 6.dp.roundToPx()
-                                            val initialSpacerPx = 88.dp.roundToPx()
-
-                                            val xOffset = (initialSpacerPx + spacingPx + todayIndex * (cellWidthPx + spacingPx) - paddingPx).toFloat()
-                                            val yOffset = 0f
-
-                                            val highlightSize = Size(
-                                                width = (cellWidthPx + paddingPx * 2).toFloat(),
-                                                height = size.height
-                                            )
-                                            val radius = CornerRadius(14.dp.toPx())
-
-                                            drawRoundRect(
-                                                color = highlightColor.copy(alpha = 0.12f),
-                                                topLeft = Offset(x = xOffset, y = yOffset),
-                                                size = highlightSize,
-                                                cornerRadius = radius
-                                            )
-
-                                            drawRoundRect(
-                                                color = highlightColor,
-                                                topLeft = Offset(x = xOffset, y = yOffset),
-                                                size = highlightSize,
-                                                cornerRadius = radius,
-                                                style = Stroke(width = 2.dp.toPx())
-                                            )
-                                        }
+                                        drawRect(
+                                            brush = Brush.horizontalGradient(
+                                                colors = listOf(
+                                                    Color.Transparent,
+                                                    Color.Black
+                                                ),
+                                                startX = 70.dp.toPx(),
+                                                endX = 104.dp.toPx()
+                                            ),
+                                            blendMode = BlendMode.DstIn
+                                        )
                                     }
                             ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.height(56.dp)
-                                ) {
-                                    Spacer(modifier = Modifier.width(88.dp))
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .horizontalScroll(scrollState)
+                                        .drawWithContent {
+                                            drawContent()
 
-                                    headers.forEach { header ->
-                                        val isWeekend = header.dayOfWeek == "Сб" || header.dayOfWeek == "Вс"
-                                        Column(
-                                            horizontalAlignment = Alignment.CenterHorizontally,
-                                            modifier = Modifier.width(56.dp)
-                                        ) {
-                                            Text(
-                                                text = header.dayOfWeek,
-                                                fontSize = 12.sp,
-                                                fontWeight = FontWeight.Medium,
-                                                color = if (isWeekend) CustomColors.weekendsText else secText
-                                            )
-                                            Spacer(modifier = Modifier.height(4.dp))
+                                            if (todayIndex != -1) {
+                                                val paddingPx = 3.dp.roundToPx()
+                                                val cellWidthPx = 56.dp.roundToPx()
+                                                val spacingPx = 6.dp.roundToPx()
+                                                val initialSpacerPx = 88.dp.roundToPx()
 
-                                            val dateBg = Color.Transparent
-                                            val dateTextColor = if (header.isToday) CustomColors.primaryAccent else if (isWeekend) CustomColors.weekendsText else CustomColors.textPrimary
+                                                val xOffset = (initialSpacerPx + spacingPx + todayIndex * (cellWidthPx + spacingPx) - paddingPx).toFloat()
+                                                val yOffset = 0f
 
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(28.dp)
-                                                    .background(dateBg, CircleShape),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Text(
-                                                    text = header.date,
-                                                    fontSize = 14.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = dateTextColor
+                                                val highlightSize = Size(
+                                                    width = (cellWidthPx + paddingPx * 2).toFloat(),
+                                                    height = size.height
+                                                )
+                                                val radius = CornerRadius(14.dp.toPx())
+
+                                                drawRoundRect(
+                                                    color = highlightColor.copy(alpha = 0.12f),
+                                                    topLeft = Offset(x = xOffset, y = yOffset),
+                                                    size = highlightSize,
+                                                    cornerRadius = radius
+                                                )
+
+                                                drawRoundRect(
+                                                    color = highlightColor,
+                                                    topLeft = Offset(x = xOffset, y = yOffset),
+                                                    size = highlightSize,
+                                                    cornerRadius = radius,
+                                                    style = Stroke(width = 2.dp.toPx())
                                                 )
                                             }
                                         }
-                                    }
-                                }
-
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                apiSchedule.forEachIndexed { empIndex, emp ->
+                                ) {
                                     Row(
                                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                                         verticalAlignment = Alignment.CenterVertically,
-                                        modifier = Modifier.height(58.dp)
+                                        modifier = Modifier.height(56.dp)
                                     ) {
                                         Spacer(modifier = Modifier.width(88.dp))
 
-                                        headers.forEachIndexed { index, header ->
-                                            val workDay = emp.days.getOrNull(index)
-                                            val shiftStatus = ShiftStatus.from(workDay?.status)
-
-                                            val contentText = when (shiftStatus) {
-                                                ShiftStatus.SHIFT, ShiftStatus.TRAINEE -> workDay?.time?.replace("-", "\n-\n") ?: ""
-                                                ShiftStatus.WEEKEND -> "Вых"
-                                                ShiftStatus.VACATION -> "Отп"
-                                                ShiftStatus.TIME_OFF -> "Отпр"
-                                                ShiftStatus.SICK_LEAVE -> "Бол"
-                                                ShiftStatus.UNKNOWN -> "-"
-                                            }
-
-                                            val cellShape = RoundedCornerShape(12.dp)
-                                            val cellBorderWidth = 1.dp
-                                            val cellBorderColor = shiftStatus.borderColor()
-
-                                            Box(
-                                                modifier = Modifier
-                                                    .width(56.dp)
-                                                    .height(58.dp)
-                                                    .background(shiftStatus.badgeBackground(), cellShape)
-                                                    .border(cellBorderWidth, cellBorderColor, cellShape),
-                                                contentAlignment = Alignment.Center
+                                        headers.forEach { header ->
+                                            val isWeekend = header.dayOfWeek == "Сб" || header.dayOfWeek == "Вс"
+                                            Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                modifier = Modifier.width(56.dp)
                                             ) {
                                                 Text(
-                                                    text = contentText,
-                                                    fontSize = 11.sp,
-                                                    fontWeight = FontWeight.Bold,
-                                                    color = shiftStatus.textColor(secText),
-                                                    textAlign = TextAlign.Center,
-                                                    lineHeight = 13.sp
+                                                    text = header.dayOfWeek,
+                                                    fontSize = 12.sp,
+                                                    fontWeight = FontWeight.Medium,
+                                                    color = if (isWeekend) CustomColors.weekendsText else secText
                                                 )
+                                                Spacer(modifier = Modifier.height(4.dp))
+
+                                                val dateBg = Color.Transparent
+                                                val dateTextColor = if (header.isToday) CustomColors.primaryAccent else if (isWeekend) CustomColors.weekendsText else CustomColors.textPrimary
+
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(28.dp)
+                                                        .background(dateBg, CircleShape),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Text(
+                                                        text = header.date,
+                                                        fontSize = 14.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = dateTextColor
+                                                    )
+                                                }
                                             }
                                         }
                                     }
 
-                                    if (empIndex < apiSchedule.lastIndex) {
-                                        Spacer(modifier = Modifier.height(6.dp))
+                                    Spacer(modifier = Modifier.height(10.dp))
+
+                                    apiSchedule.forEachIndexed { empIndex, emp ->
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.height(58.dp)
+                                        ) {
+                                            Spacer(modifier = Modifier.width(88.dp))
+
+                                            headers.forEachIndexed { index, header ->
+                                                val workDay = emp.days.getOrNull(index)
+                                                val shiftStatus = ShiftStatus.from(workDay?.status)
+
+                                                val contentText = when (shiftStatus) {
+                                                    ShiftStatus.SHIFT, ShiftStatus.TRAINEE -> workDay?.time?.replace("-", "\n-\n") ?: ""
+                                                    ShiftStatus.WEEKEND -> "Вых"
+                                                    ShiftStatus.VACATION -> "Отп"
+                                                    ShiftStatus.TIME_OFF -> "Отпр"
+                                                    ShiftStatus.SICK_LEAVE -> "Бол"
+                                                    ShiftStatus.UNKNOWN -> "-"
+                                                }
+
+                                                val cellShape = RoundedCornerShape(12.dp)
+                                                val cellBorderWidth = 1.dp
+                                                val cellBorderColor = shiftStatus.borderColor()
+
+                                                Box(
+                                                    modifier = Modifier
+                                                        .width(56.dp)
+                                                        .height(58.dp)
+                                                        .background(shiftStatus.badgeBackground(), cellShape)
+                                                        .border(cellBorderWidth, cellBorderColor, cellShape),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Text(
+                                                        text = contentText,
+                                                        fontSize = 11.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = shiftStatus.textColor(secText),
+                                                        textAlign = TextAlign.Center,
+                                                        lineHeight = 13.sp
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        if (empIndex < apiSchedule.lastIndex) {
+                                            Spacer(modifier = Modifier.height(6.dp))
+                                        }
                                     }
                                 }
                             }
@@ -425,14 +442,6 @@ fun ScheduleCard(
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .width(104.dp)
-                                    .drawBehind {
-                                        val bleed = 4.dp.toPx()
-                                        drawRect(
-                                            brush = smoothFrostGradient,
-                                            topLeft = Offset(0f, -bleed),
-                                            size = size.copy(height = size.height + bleed * 2)
-                                        )
-                                    }
                                     .draggable(
                                         orientation = Orientation.Horizontal,
                                         state = rememberDraggableState { delta ->

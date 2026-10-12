@@ -28,49 +28,26 @@ data class CustomColorsPalette(
 )
 
 val DarkCustomColorsPalette = CustomColorsPalette(
-    background = Color(0xFF0B0C0E),
-    surface = Color(0xFF17181C),
-    surfaceBorder = Color(0xFF2B2D38),
-    primaryAccent = Color(0xFF223FD2),
-    adminAccent = Color(0xFF223FD2),
+    background = Color(0xFF0B0914),
+    surface = Color(0xFF1A162B),
+    surfaceBorder = Color(0xFF332D4A),
+    primaryAccent = Color(0xFF6B57FF),
+    adminAccent = Color(0xFF6B57FF),
     textPrimary = Color(0xFFFFFFFF),
-    textSecondary = Color(0xFF8B92A0),
-    inputLabel = Color(0xFF90A3D4),
-    searchBg = Color(0xFF101114),
-    shiftsBg = Color(0xFF161F38),
-    shiftsText = Color(0xFF7A99FF),
-    weekendsBg = Color(0xFF2A1519),
-    weekendsText = Color(0xFFF87171),
-    vacBg = Color(0xFF112033),
-    vacText = Color(0xFF60A5FA),
-    timeOffBg = Color(0xFF2A1A14),
-    timeOffText = Color(0xFFFB923C),
-    sickBg = Color(0xFF22182E),
-    sickText = Color(0xFFC084FC),
-    defaultShiftBg = Color(0xFF17181C)
-)
-
-val LightCustomColorsPalette = CustomColorsPalette(
-    background = Color(0xFFF1F4F9),
-    surface = Color(0xFFFFFFFF),
-    surfaceBorder = Color(0xFFD6DCED),
-    primaryAccent = Color(0xFF1428A0),
-    adminAccent = Color(0xFF1428A0),
-    textPrimary = Color(0xFF111827),
-    textSecondary = Color(0xFF6B7280),
-    inputLabel = Color(0xFF2B3A67),
-    searchBg = Color(0xFFF8FAFC),
-    shiftsBg = Color(0xFFEBF1FF),
-    shiftsText = Color(0xFF1428A0),
-    weekendsBg = Color(0xFFFEE2E2),
-    weekendsText = Color(0xFFDC2626),
-    vacBg = Color(0xFFE0F2FE),
-    vacText = Color(0xFF0284C7),
-    timeOffBg = Color(0xFFFFEDD5),
-    timeOffText = Color(0xFFD97706),
-    sickBg = Color(0xFFF3E8FF),
-    sickText = Color(0xFF7E22CE),
-    defaultShiftBg = Color(0xFFF8FAFC)
+    textSecondary = Color(0xFF8A879E),
+    inputLabel = Color(0xFF6B57FF),
+    searchBg = Color(0xFF13101F),
+    shiftsBg = Color(0x336B57FF),
+    shiftsText = Color(0xFFB0A6FF),
+    weekendsBg = Color(0x33FF577F),
+    weekendsText = Color(0xFFFF8FA3),
+    vacBg = Color(0x3357C4FF),
+    vacText = Color(0xFF8FD6FF),
+    timeOffBg = Color(0x33FF9E57),
+    timeOffText = Color(0xFFFFB88A),
+    sickBg = Color(0x33B357FF),
+    sickText = Color(0xFFD6A6FF),
+    defaultShiftBg = Color(0x331A162B)
 )
 
 val LocalCustomColors = staticCompositionLocalOf { DarkCustomColorsPalette }
