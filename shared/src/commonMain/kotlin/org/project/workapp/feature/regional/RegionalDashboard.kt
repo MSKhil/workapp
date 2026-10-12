@@ -116,7 +116,6 @@ fun RegionalDashboard(
                 NavItem("Главная", Icons.Default.Home),
                 NavItem("Поиск", Icons.Default.Search)
             ),
-            accentColor = CustomColors.primaryAccent,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)

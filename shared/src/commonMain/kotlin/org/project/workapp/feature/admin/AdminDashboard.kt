@@ -122,7 +122,6 @@ fun AdminDashboard(
                 NavItem("Инфо", Icons.Default.LocalOffer),
                 NavItem("Главная", Icons.Default.Home)
             ),
-            accentColor = CustomColors.adminAccent,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 16.dp)

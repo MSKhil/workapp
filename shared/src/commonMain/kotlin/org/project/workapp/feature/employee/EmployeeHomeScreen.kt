@@ -340,22 +340,10 @@ fun EmployeeHomeScreen(
                                 val cardVal = salaryData.card.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0
                                 val totalBalance = cashVal + cardVal
 
-                                val sheetUrl = when {
-                                    firstStore.storeName?.uppercase()?.contains("СЕДАНКА") == true ->
-                                        "https://docs.google.com/spreadsheets/d/1_P1MF7hW_MoGY9U-WXXmZv-WyeyhJPIzB0j3FR3e6nU/edit"
-                                    firstStore.storeName?.uppercase()?.contains("КАЛИНА") == true ->
-                                        "https://docs.google.com/spreadsheets/d/17vUUGGTMsoEgu5lU2zQQZG1qpPRutXS9W3KXV8iqe2o/edit"
-                                    else -> null
-                                }
+
 
                                 SalaryCard(
-                                    balance = totalBalance,
-                                    onDoubleTap = {
-                                        if (sheetUrl != null) {
-                                            try { uriHandler.openUri(sheetUrl) } catch (_: Exception) {}
-                                        }
-                                    }
-                                )
+                                    balance = totalBalance)
                                 Spacer(modifier = Modifier.height(14.dp))
                             }
 

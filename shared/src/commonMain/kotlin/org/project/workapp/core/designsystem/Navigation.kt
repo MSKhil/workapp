@@ -1,8 +1,6 @@
+// Navigation.kt
 package org.project.workapp.core.designsystem
 
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,18 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -37,12 +33,11 @@ fun AnimatedBottomNavBar(
     selectedItem: Int,
     onItemSelected: (Int) -> Unit,
     items: List<NavItem>,
-    accentColor: Color = CustomColors.primaryAccent,
     modifier: Modifier = Modifier
 ) {
     val itemWidth = 72.dp
     val totalWidth = itemWidth * items.size
-    val indicatorSize = 48.dp
+    val glowColor = CustomColors.primaryAccent
 
     Box(
         modifier = modifier
@@ -54,41 +49,22 @@ fun AnimatedBottomNavBar(
             modifier = Modifier
                 .width(totalWidth)
                 .height(60.dp)
-                .shadow(
-                    elevation = 12.dp,
-                    shape = AppShapes.pill,
-                    spotColor = Color(0x38000000),
-                    ambientColor = Color(0x1A000000)
-                )
                 .clip(AppShapes.pill)
-                .background(CustomColors.surface)
+                .background(CustomColors.surface.copy(alpha = 0.85f))
+                .drawBehind {
+                    drawRect(color = glowColor.copy(alpha = 0.12f))
+                }
                 .border(
                     width = 1.dp,
-                    color = CustomColors.surfaceBorder,
+                    brush = Brush.linearGradient(
+                        listOf(
+                            Color.White.copy(alpha = 0.15f),
+                            Color.Transparent
+                        )
+                    ),
                     shape = AppShapes.pill
                 )
         ) {
-            val targetOffset = itemWidth * selectedItem + (itemWidth - indicatorSize) / 2
-            val indicatorOffset by animateDpAsState(
-                targetValue = targetOffset,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioNoBouncy,
-                    stiffness = Spring.StiffnessMedium
-                ),
-                label = "indicatorOffset"
-            )
-
-            // Скользящий круг
-            Box(
-                modifier = Modifier
-                    .offset(x = indicatorOffset)
-                    .size(indicatorSize)
-                    .align(Alignment.CenterStart)
-                    .clip(CircleShape)
-                    .background(accentColor)
-            )
-
-            // Иконки
             Row(
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
@@ -109,8 +85,8 @@ fun AnimatedBottomNavBar(
                         Icon(
                             imageVector = item.icon,
                             contentDescription = item.title,
-                            tint = if (isSelected) Color.White else CustomColors.textSecondary,
-                            modifier = Modifier.size(24.dp)
+                            tint = if (isSelected) CustomColors.primaryAccent else CustomColors.textSecondary.copy(alpha = 0.8f),
+                            modifier = Modifier.size(30.dp)
                         )
                     }
                 }
