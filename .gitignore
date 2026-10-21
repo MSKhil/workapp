@@ -4,3 +4,10 @@
 /build/
 /shared/build/
 /shared/build/classes/kotlin/android/main/
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+*/build
